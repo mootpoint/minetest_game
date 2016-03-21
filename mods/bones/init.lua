@@ -2,6 +2,12 @@
 -- See README.txt for licensing and other information. 
 
 bones = {}
+bones.enable = minetest.setting_getbool("enable_bones")
+
+if bones.enable == nil then
+	minetest.setting_setbool("enable_bones", true)
+	bones.enable = true
+end
 
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
@@ -157,21 +163,24 @@ local function may_replace(pos, player)
 	return node_definition.buildable_to and not minetest.is_protected(pos, player:get_player_name())
 end
 
+if minetest.setting_getbool("creative_mode") then
+	return
+end
+
 minetest.register_on_dieplayer(function(player)
-	if minetest.setting_getbool("creative_mode") then
+
+	-- are bones enabled?
+	if not bones.enable then
 		return
 	end
-	
+
 	local player_inv = player:get_inventory()
 	if player_inv:is_empty("main") and
 		player_inv:is_empty("craft") then
 		return
 	end
 
-	local pos = player:getpos()
-	pos.x = math.floor(pos.x+0.5)
-	pos.y = math.floor(pos.y+0.5)
-	pos.z = math.floor(pos.z+0.5)
+	local pos = vector.round(player:getpos())
 	local param2 = minetest.dir_to_facedir(player:get_look_dir())
 	local player_name = player:get_player_name()
 
