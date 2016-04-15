@@ -70,7 +70,7 @@ A global string called `creative.formspec_add` was added which allows mods to ad
 Bones API
 ---------
 
-The variable bones.enable will be set to true by default and can be changed to false with the use of mods so that bone drops can be disabled in preference of that mod e.g. Drop On Die mod.  Make sure that bones is listed in the depends.txt file.
+The variable bones.enable will be read from the minetest.conf setting 'bones_enable' (true by default) and can be changed to false with the use of mods so that bone drops can be disabled in preference of that mod e.g. Drop On Die mod.  Make sure that bones is listed in the depends.txt file.
 
 Doors API
 ---------
