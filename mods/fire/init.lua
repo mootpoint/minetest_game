@@ -117,7 +117,8 @@ minetest.register_tool("fire:flint_and_steel", {
 								{name = "tnt:gunpowder_burning"})
 						else
 							minetest.set_node(flame_pos,
-								{name = "fire:basic_flame"})
+								--{name = "fire:basic_flame"})
+								{name = "fake_fire:fake_fire"})
 						end
 					else
 						minetest.chat_send_player(player_name, "This area is protected")
@@ -266,6 +267,7 @@ else
 			local p = minetest.find_node_near(pos, 1, {"air"})
 			if p then
 				minetest.set_node(p, {name = "fire:basic_flame"})
+				fire.last_spread_pos = p
 			end
 		end,
 	})
@@ -296,6 +298,32 @@ else
 
 end
 
+function fire.alarm()
+	local pos = fire.last_spread_pos
+
+	if pos and pos.y > 0 then
+		fire.last_spread_pos = nil
+
+		local node = minetest.get_node_or_nil(pos)
+		if node and node.name == "fire:basic_flame" then
+			local nearest_player_name = ""
+			local nearest_distance = 32000
+			for _,player in pairs(minetest.get_connected_players()) do
+				local distance = math.floor(vector.distance(player:getpos(),pos))
+				if distance < nearest_distance then
+					nearest_distance = distance
+					nearest_player_name = player:get_player_name()
+				end
+			end
+			minetest.chat_send_all("ALERT: Fire is spreading at "..
+				minetest.pos_to_string(pos).."; "..nearest_distance.." nodes away from "..
+				nearest_player_name..".")
+		end
+	end
+	minetest.after(10, fire.alarm)
+end
+
+minetest.after(10, fire.alarm)
 
 -- Rarely ignite things from far
 
