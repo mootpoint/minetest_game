@@ -307,12 +307,15 @@ farming.register_plant = function(name, def)
 
 	-- Register growing steps
 	for i = 1, def.steps do
+		local base_rarity = def.steps - i + 1
 		local drop = {
 			items = {
-				{items = {mname .. ":" .. pname}, rarity = 9 - i},
-				{items = {mname .. ":" .. pname}, rarity= 18 - i * 2},
-				{items = {mname .. ":seed_" .. pname}, rarity = 9 - i},
-				{items = {mname .. ":seed_" .. pname}, rarity = 18 - i * 2},
+				{items = {mname .. ":" .. pname}, rarity = base_rarity},
+				{items = {mname .. ":" .. pname}, rarity = base_rarity * 2},
+				{items = {mname .. ":" .. pname}, rarity = base_rarity * 5},
+				{items = {mname .. ":seed_" .. pname}, rarity = base_rarity},
+				{items = {mname .. ":seed_" .. pname}, rarity = base_rarity * 2},
+				{items = {mname .. ":seed_" .. pname}, rarity = base_rarity * 5},
 			}
 		}
 		local nodegroups = {snappy = 3, flammable = 2, plant = 1, not_in_creative_inventory = 1, attached_node = 1}
